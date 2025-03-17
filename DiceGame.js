@@ -1,15 +1,33 @@
-
 const crypto = require('crypto');
 const readline = require('readline-sync');
 const Table = require('cli-table3'); // Third-party library for tables
 
+// Function to validate dice sets
+function validateDiceSets(diceSets) {
+    if (diceSets.length < 2) {
+        console.error("Error: Provide at least two sets of dice as arguments.");
+        process.exit(1);
+    }
+
+    for (const set of diceSets) {
+        if (set.length !== 6) {
+            console.error("Error: Each dice set must have exactly 6 sides.");
+            process.exit(1);
+        }
+        for (const value of set) {
+            if (!Number.isInteger(value)) {
+                console.error("Error: Dice values must be integers.");
+                process.exit(1);
+            }
+        }
+    }
+}
+
 // Read dice sets from command-line arguments
 const diceSets = process.argv.slice(2).map(set => set.split(',').map(Number));
 
-if (diceSets.length < 2) {
-    console.error("Error: Provide at least two sets of dice as arguments.");
-    process.exit(1);
-}
+// Validate dice sets
+validateDiceSets(diceSets);
 
 // Function to generate HMAC
 function generateHMAC(secretKey, value) {
